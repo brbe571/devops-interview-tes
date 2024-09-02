@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+spec:
+  initContainers:
+  - name: download-file
+    image: curlimages/curl:latest
+    command: ['sh', '-c', 'curl -o /data/myfile.txt https://raw.githubusercontent.com/BGLCorp/devops-interview-tests/main/myfile.txt']
+    volumeMounts:
+    - mountPath: /data
+      name: temp
+  containers:
+  - name: myapp-container
+    image: alpine:latest
+    command: ['sh', '-c', 'tail -f /data/myfile.txt']
+    volumeMounts:
+    - mountPath: /data
+      name: temp
+  volumes:
+  - name: temp
+    emptyDir: {}
+
